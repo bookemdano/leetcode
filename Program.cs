@@ -13,6 +13,16 @@ namespace leetcode
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
 
+            var node = ListNode.Parse("2,1");
+            var newNode = Partition(node, 2);
+            Console.WriteLine($"{node} to {newNode} at 2");
+            node = ListNode.Parse("1,4,3,2,5,2");
+            newNode = Partition(node, 3);
+            Console.WriteLine($"{node} to {newNode} at 3");
+            //Input: head = [2, 1], x = 2
+            //Output:[1,2]
+
+            /*
             var list1 = new List<NestedInteger>() { new NIInt(3), new NIInt(2), new NIInt(1) };
             var list2 = NIList.Parse("[1,1],2,[3,3]").GetList();
             var list3 = NIList.Parse("1,[4,[6]]").GetList();
@@ -85,159 +95,68 @@ namespace leetcode
             Console.WriteLine($"{sw.Elapsed}");
 
         }
-
-        public interface NestedInteger
+        public class ListNode
         {
- 
-            // @return true if this NestedInteger holds a single integer, rather than a nested list.
-            bool IsInteger();
- 
-            // @return the single integer that this NestedInteger holds, if it holds a single integer
-            // Return null if this NestedInteger holds a nested list
-            int GetInteger();
- 
-            // @return the nested list that this NestedInteger holds, if it holds a nested list
-            // Return null if this NestedInteger holds a single integer
-            IList<NestedInteger> GetList();
-        }
-        public class NIInt : NestedInteger
-        {
-            private int _i;
-
-            public NIInt(int i)
+            public int val;
+            public ListNode next;
+            public ListNode(int val = 0, ListNode next = null)
             {
-                _i = i;
+                this.val = val;
+                this.next = next;
             }
-            public int GetInteger()
+            public static ListNode Parse(string str)
             {
-                return _i;
-            }
-
-            public IList<NestedInteger> GetList()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInteger()
-            {
-                return true;
-            }
-
-            static public List<NestedInteger> ParseList(string str)
-            {
-                var rv = new List<NestedInteger>();
                 var parts = str.Split(",");
+                ListNode rv = null;
+                ListNode lastNode = null;
                 foreach (var part in parts)
-                    rv.Add(new NIInt(int.Parse(part)));
-                return rv;
-            }
-
-            public override string ToString()
-            {
-                return $"{GetInteger()}";
-            }
-        }
-        public class NIList : NestedInteger
-        {
-            private List<NestedInteger> _list;
-            private NIList()
-            {
-
-            }
-            public NIList(int n, int i)
-            {
-                _list = new List<NestedInteger>();
-                for(int j = 0; j < n; j++)
-                    _list.Add(new NIInt(i));
-
-            }
-
-            internal static NIList Deep(int levels)
-            {
-                var rv = new NIList();
-                rv._list = new List<NestedInteger>();
-                rv._list.Add(new NIInt((int)Math.Pow(levels, 2)));
-                if (levels > 1)
-                    rv._list.Add(NIList.Deep(levels - 1));
-                return rv;
-            }
-
-            internal static NIList Empty(int levels)
-            {
-                var rv = new NIList();
-                rv._list = new List<NestedInteger>();
-                if (levels > 1)
-                    rv._list.Add(NIList.Empty(levels - 1));
-                return rv;
-            }
-
-            internal static NIList Parse(string str)
-            {
-                //[[1,1],2,[1,1]]
-                //[3,2,1]
-                var rv = new NIList();
-                rv._list = new List<NestedInteger>();
-                var count = 0;
-                int iStart = 0;
-                while(str.Contains('['))
                 {
-                    for (int i = 0; i < str.Length; i++)
-                    {
-                        var c = str[i];
-                        if (c == '[')
-                        {
-                            if (count == 0 && i > 0)
-                            {
-                                rv._list.AddRange(NIInt.ParseList(str.Substring(0, i - 1)));
-                                str = str.Remove(0, i - 1).Trim(',');
-                                break;
-                            }
-                            if (count == 0)
-                                iStart = i + 1;
-                            count++;
-                        }
-                        if (c == ']')
-                        {
-                            count--;
-                            if (count == 0)
-                            {
-                                rv._list.Add(Parse(str.Substring(iStart, i - iStart)));
-                                str = str.Remove(iStart - 1, i - iStart + 2).Trim(',');
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (!string.IsNullOrWhiteSpace(str))
-                    rv._list.AddRange(NIInt.ParseList(str));
+                    var newNode = new ListNode(int.Parse(part));
+                    if (rv == null)
+                        rv = newNode;
+                    if (lastNode != null)
+                        lastNode.next = newNode;
 
+                    lastNode = newNode;
+                }
                 return rv;
             }
-            public int GetInteger()
-            {
-                throw new NotImplementedException();
-            }
 
-            public IList<NestedInteger> GetList()
-            {
-                return _list.Cast<NestedInteger>().ToList();
-            }
-
-            public bool IsInteger()
-            {
-                return false;
-            }
             public override string ToString()
             {
-                var parts = new List<string>();
-                foreach(var i in GetList())
-                    parts.Add(i.ToString());
-                return $"[{string.Join(",", parts)}]";
+                var rv = $"{val}";
+                if (next != null)
+                    rv += $", n{next.ToString()}";
+                return rv;
+
             }
-
-
         }
 
+
+        static public ListNode Partition(ListNode head, int x)
+        {
+            var before = new ListNode();
+            ListNode beforeLast = before;
+            var after = new ListNode();
+            ListNode afterLast = after;
+            while (head != null)
+            {
+                if (head.val < x)
+                {
+                    beforeLast.next = head;
+                    beforeLast = beforeLast.next;   // increment
+                }
+                else if (head.val >= x)
+                {
+                    afterLast.next = head;
+                    afterLast = afterLast.next;   // increment
+                }
+                head = head.next;
+            }
+            afterLast.next = null;
+            beforeLast.next = after;
+            return before.next;
+        }
         static public bool IsPalindrome(string s)
         {
             //var cs = s.ToLower().Where(c => char.IsLetterOrDigit(c)).ToArray();
