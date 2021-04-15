@@ -13,6 +13,15 @@ namespace leetcode
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
 
+            AssertSame(Fib(0), 0);
+            AssertSame(Fib(1), 1);
+            AssertSame(Fib(2), 1);
+            AssertSame(Fib(3), 2);
+            AssertSame(Fib(4), 3);
+            AssertSame(Fib(5), 5);
+            AssertSame(Fib(6), 8);
+
+            /* 4/14/2021
             var node = ListNode.Parse("2,1");
             var newNode = Partition(node, 2);
             Console.WriteLine($"{node} to {newNode} at 2");
@@ -95,43 +104,23 @@ namespace leetcode
             Console.WriteLine($"{sw.Elapsed}");
 
         }
-        public class ListNode
+
+        static public int Fib(int n)
         {
-            public int val;
-            public ListNode next;
-            public ListNode(int val = 0, ListNode next = null)
+            var rv = 1;
+            var last = 0;
+            if (n == 0)
+                return 0;
+            if (n == 1)
+                return 1;
+            for (var i = 2; i <= n; i++)
             {
-                this.val = val;
-                this.next = next;
+                var oldLast = rv;
+                rv = last + rv;
+                last = oldLast;
             }
-            public static ListNode Parse(string str)
-            {
-                var parts = str.Split(",");
-                ListNode rv = null;
-                ListNode lastNode = null;
-                foreach (var part in parts)
-                {
-                    var newNode = new ListNode(int.Parse(part));
-                    if (rv == null)
-                        rv = newNode;
-                    if (lastNode != null)
-                        lastNode.next = newNode;
-
-                    lastNode = newNode;
-                }
-                return rv;
-            }
-
-            public override string ToString()
-            {
-                var rv = $"{val}";
-                if (next != null)
-                    rv += $", n{next.ToString()}";
-                return rv;
-
-            }
+            return rv;
         }
-
 
         static public ListNode Partition(ListNode head, int x)
         {
