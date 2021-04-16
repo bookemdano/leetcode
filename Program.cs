@@ -13,6 +13,8 @@ namespace leetcode
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
 
+            AdjDup2.Test();
+            /*
             AssertSame(Fib(0), 0);
             AssertSame(Fib(1), 1);
             AssertSame(Fib(2), 1);
