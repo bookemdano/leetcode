@@ -26,10 +26,10 @@ namespace leetcode
             /* 4/14/2021
             var node = ListNode.Parse("2,1");
             var newNode = Partition(node, 2);
-            Console.WriteLine($"{node} to {newNode} at 2");
+            Console.WriteLine($"{ListNode.Parse("2,1")} to {newNode} at 2");
             node = ListNode.Parse("1,4,3,2,5,2");
             newNode = Partition(node, 3);
-            Console.WriteLine($"{node} to {newNode} at 3");
+            Console.WriteLine($"{ListNode.Parse("1,4,3,2,5,2")} to {newNode} at 3");
             //Input: head = [2, 1], x = 2
             //Output:[1,2]
 
@@ -145,7 +145,7 @@ namespace leetcode
                 head = head.next;
             }
             afterLast.next = null;
-            beforeLast.next = after;
+            beforeLast.next = after.next;
             return before.next;
         }
         static public bool IsPalindrome(string s)
