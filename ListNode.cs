@@ -1,42 +1,48 @@
 ﻿namespace leetcode
 {
-    partial class Program
+    public class ListNode
     {
-        public class ListNode
+        public int val;
+        public ListNode next;
+        public ListNode(int val = 0, ListNode next = null)
         {
-            public int val;
-            public ListNode next;
-            public ListNode(int val = 0, ListNode next = null)
+            this.val = val;
+            this.next = next;
+        }
+        public int Length
+        {
+            get
             {
-                this.val = val;
-                this.next = next;
+                return 1 + next.Length;
             }
-            public static ListNode Parse(string str)
+        }
+        public static ListNode Parse(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return null;
+            var parts = str.Split(",");
+            ListNode rv = null;
+            ListNode lastNode = null;
+            foreach (var part in parts)
             {
-                var parts = str.Split(",");
-                ListNode rv = null;
-                ListNode lastNode = null;
-                foreach (var part in parts)
-                {
-                    var newNode = new ListNode(int.Parse(part));
-                    if (rv == null)
-                        rv = newNode;
-                    if (lastNode != null)
-                        lastNode.next = newNode;
+                var newNode = new ListNode(int.Parse(part));
+                if (rv == null)
+                    rv = newNode;
+                if (lastNode != null)
+                    lastNode.next = newNode;
 
-                    lastNode = newNode;
-                }
-                return rv;
+                lastNode = newNode;
             }
+            return rv;
+        }
 
-            public override string ToString()
-            {
-                var rv = $"{val}";
-                if (next != null)
-                    rv += $", n{next.ToString()}";
-                return rv;
+        public override string ToString()
+        {
+            var rv = $"{val}";
+            if (next != null)
+                rv += $", n{next.ToString()}";
+            return rv;
 
-            }
         }
     }
 }
