@@ -16,7 +16,6 @@ namespace leetcode
             Dessert.AssertSame(-12, c.MyAtoi(" -0012a42"));
             Dessert.AssertSame(2147483647, c.MyAtoi("2147483648"));
             Dessert.AssertSame(-2147483648, c.MyAtoi("-2147483648"));
-            Dessert.AssertSame(-2147483648, c.MyAtoi("-2147483648"));
             Dessert.AssertSame(-2147483647, c.MyAtoi("-2147483647"));
 
         }

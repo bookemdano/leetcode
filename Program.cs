@@ -13,7 +13,7 @@ namespace leetcode
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
 
-            AtoI.Test();
+            TreePreorderTrav.Test();
             /*
             AssertSame(Fib(0), 0);
             AssertSame(Fib(1), 1);
