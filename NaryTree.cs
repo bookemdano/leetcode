@@ -65,7 +65,7 @@ namespace leetcode
                     i++;
                     continue;
                 }    
-                var nextblock = NextBlock(str, ref i);
+                var nextblock = StringUtils.NextBlock(str, ref i, '(', ')');
                 if (nextblock != null)
                 {
                     ParseNode(lastNode, nextblock);
@@ -82,29 +82,6 @@ namespace leetcode
             }
         }
 
-        static string NextBlock(string str, ref int start)
-        {
-            if (str[start] != '(')
-                return null;
-            int depth = 0;
-            for (int i = start; i < str.Length; i++)
-            {
-                if (str[i] == '(')
-                    depth++;
-                else if (str[i] == ')')
-                {
-                    depth--;
-                    if (depth == 0)
-                    {
-                        var size = i - start - 1;
-                        int origStart = start;
-                        start = i + 1;  // go to next one
-                        return str.Substring(origStart + 1, size);
-                    }
-                }
-            }
-            return null;
-        }
         static int? NextInt(string str, ref int start)
         {
             if (start >= str.Length || !char.IsDigit(str[start]))

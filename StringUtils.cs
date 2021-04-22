@@ -98,5 +98,29 @@ namespace leetcode
             for (var i = 0; i < s.Length; i++)
                 s[i] = result[i];
         }
+
+        public static string NextBlock(string str, ref int start, char cStart, char cEnd)
+        {
+            if (str[start] != cStart)
+                return null;
+            int depth = 0;
+            for (int i = start; i < str.Length; i++)
+            {
+                if (str[i] == cStart)
+                    depth++;
+                else if (str[i] == cEnd)
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        var size = i - start - 1;
+                        int origStart = start;
+                        start = i + 1;  // go to next one
+                        return str.Substring(origStart + 1, size);
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
