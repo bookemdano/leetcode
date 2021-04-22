@@ -12,6 +12,14 @@ namespace leetcode
             return (x == y);
         }
 
+        static public bool IsTrue(bool b, string str)
+        {
+            if (b)
+                Pass($"is_true {str} '{b}'");
+            else
+                Error($"is_true {str} '{b}'");
+            return b;
+        }
         static void Error(string str)
         {
             Console.WriteLine($"{DateTime.Now} ***FAILED*** {str}");

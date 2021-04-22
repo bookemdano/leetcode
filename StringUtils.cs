@@ -11,6 +11,15 @@ namespace leetcode
         public static void Test()
         {
             var c = new StringUtils();
+
+            Dessert.IsTrue(c.IsValid("()"), "String ()");
+            Dessert.IsTrue(!c.IsValid(")"), "String )");
+            Dessert.IsTrue(!c.IsValid("("), "String (");
+            Dessert.IsTrue(c.IsValid("()[]{}"), "String ()[]{}");
+            Dessert.IsTrue(!c.IsValid("(]"), "String (]");
+            Dessert.IsTrue(!c.IsValid("([)]"), "String ([)]");
+            Dessert.IsTrue(c.IsValid("{[]}"), "String {[]}");
+
             char[] chars;
 
             chars = "the sky is blue".ToCharArray();
@@ -29,6 +38,24 @@ namespace leetcode
             Dessert.AssertSame("example good a", c.ReverseWords("a good   example"));
             Dessert.AssertSame("Alice Loves Bob", c.ReverseWords("  Bob    Loves  Alice   "));
             Dessert.AssertSame("bob like even not does Alice", c.ReverseWords("Alice does not even like bob"));
+        }
+        public bool IsValid(string s)
+        {
+            var stack = new Stack<char>();
+            var pairs = new Dictionary<char, char>() { {'(', ')' }, { '[', ']' }, { '{', '}' } };
+            foreach (var c in s)
+            {
+                if (c == '(' || c == '[' || c == '{')
+                    stack.Push(c);
+                else
+                {
+                    if (!stack.Any())
+                        return false;
+                    if (pairs[stack.Pop()] != c)
+                        return false;
+                }
+            }
+            return !stack.Any();
         }
         public string ReverseWords(string s)
         {

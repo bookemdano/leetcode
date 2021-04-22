@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace leetcode
 {
     public class AtoI
@@ -6,6 +8,7 @@ namespace leetcode
         static public void Test()
         {
             var c = new AtoI();
+
             Dessert.AssertSame(42, c.MyAtoi("42"));
             Dessert.AssertSame(-42, c.MyAtoi("-42"));
             Dessert.AssertSame(0, c.MyAtoi("words and 987"));
