@@ -35,7 +35,8 @@ namespace leetcode
                 rv.Add(head.val);
                 if (head.children != null)
                 {
-                    foreach(var child in head.children.Reverse())
+                    var rev = head.children.Reverse();
+                    foreach (var child in rev)
                         stack.Push(child);
                 }
             }

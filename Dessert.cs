@@ -6,9 +6,26 @@ namespace leetcode
         static public bool AssertSame(double x, double y, string str = null)
         {
             if (x != y)
-                Console.WriteLine($"FAILED same {str} {x} != {y}");
+                Error($"same {str} '{x}' != '{y}'");
             else
-                Console.WriteLine($"pass same {str} {x} == {y}");
+                Pass($"same {str} '{x}' == '{y}'");
+            return (x == y);
+        }
+
+        static void Error(string str)
+        {
+            Console.WriteLine($"{DateTime.Now} ***FAILED*** {str}");
+        }
+        static void Pass(string str)
+        {
+            Console.WriteLine($"{DateTime.Now} pass {str}");
+        }
+        static public bool AssertSame(string x, string y, string str = null)
+        {
+            if (x != y)
+                Error($"same {str} '{x}' != '{y}'");
+            else
+                Pass($"same {str} '{x}' == '{y}'");
             return (x == y);
         }
 
