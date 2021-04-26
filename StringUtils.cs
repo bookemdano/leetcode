@@ -8,6 +8,48 @@ namespace leetcode
 {
     public class StringUtils
     {
+        public static void Test2()
+        {
+            var c = new StringUtils();
+            Dessert.AssertSame("a", c.LongestPalindrome("a"));
+            Dessert.AssertSame("a", c.LongestPalindrome("ac"));
+            Dessert.AssertSame("aa", c.LongestPalindrome("aa"));
+            Dessert.AssertSame("bab", c.LongestPalindrome("babad"));
+            Dessert.AssertSame("bb", c.LongestPalindrome("cbbd"));
+            Dessert.AssertSame("ddd", c.LongestPalindrome("aabbccdddeeff"));
+            Dessert.AssertSame("ddd", c.LongestPalindrome("aabbccddd"));
+        }
+        public string LongestPalindrome(string s)
+        {
+            for (int nPan = s.Length; nPan > 1; nPan--)
+            {
+                var end = s.Length - nPan;
+                for(int firstChar = 0; firstChar <= end; firstChar++)
+                {
+                    if (IsPalindrome(s, firstChar, nPan))
+                        return s.Substring(firstChar, nPan);
+                }
+            }
+            return s.Substring(0, 1);
+        }
+        bool IsPalindrome(string str, int start, int len)
+        {
+            for (int i = 0; i < len / 2; i++)
+            {
+                if (str[i + start] != str[start + len - i - 1])
+                    return false;
+            }
+            return true;
+        }
+        bool IsPalindrome(string str)
+        {
+            for (int i = 0; i < str.Length / 2; i++)
+            {
+                if (str[i] != str[str.Length - i - 1])
+                    return false;
+            }
+            return true;
+        }
         public static void Test()
         {
             var c = new StringUtils();
