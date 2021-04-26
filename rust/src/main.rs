@@ -1,4 +1,30 @@
 fn main() {
+    // atoi_tests
+    icecream();
+}
+fn icecream()
+{
+    assert_eq!(4, max_ice_cream(vec!(1,3,2,4,1), 7));
+    assert_eq!(0, max_ice_cream(vec!(10,6,8,7,7,8), 5));
+    assert_eq!(6, max_ice_cream(vec!(1,6,3,1,2,5), 20));
+}
+pub fn max_ice_cream(costs: Vec<i32>, coins: i32) -> i32 {
+    let mut sorted = costs;
+    sorted.sort();
+    let mut remaining = coins;
+    let mut rv: i32 = 0;
+    for c in sorted {
+        if c <= remaining {
+            rv = rv + 1;
+            remaining = remaining - c;
+        } else {
+            break;
+        }
+    }
+    rv
+}
+
+fn atoi_tests() {
     assert_eq!(42, my_atoi(String::from("42")));
     assert_eq!(-42, my_atoi(String::from("-42")));
     assert_eq!(-42, my_atoi(String::from("  -42xyz")));
