@@ -12,7 +12,7 @@ namespace leetcode
             return (x == y);
         }
 
-        static public bool IsTrue(bool b, string str)
+        static public bool IsTrue(bool b, string str = null)
         {
             if (b)
                 Pass($"is_true {str} '{b}'");
