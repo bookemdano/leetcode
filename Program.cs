@@ -13,7 +13,7 @@ namespace leetcode
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
 
-            StringUtils.Test2();
+            April.Test();
             /*
             AssertSame(Fib(0), 0);
             AssertSame(Fib(1), 1);
