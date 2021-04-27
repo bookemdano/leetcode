@@ -79,8 +79,43 @@ namespace leetcode
                 sum += up;
             return bricks >= sum;
         }
-
+        // use binary search
         public int FurthestBuilding(int[] heights, int bricks, int ladders)
+        {
+            var deltas = new Dictionary<int, long>();
+            for (int i = 0; i < heights.Length; i++)
+            {
+                if (i == 0 || heights[i - 1] >= heights[i])
+                    continue;
+                deltas.Add(i, heights[i] - heights[i - 1]);
+            }
+
+            var values = deltas.Values.ToArray();
+            if (CanDo(values, bricks, ladders))
+                return heights.Length - 1;
+
+            var can = 0;
+            var cant = values.Length - 1;
+            while(cant > can + 1)
+            {
+                var guess = ((cant - can) / 2) + can;
+                var sub = values.Take(guess + 1);
+                bool b = CanDo(sub, bricks, ladders);
+                if (b)
+                    can = guess;
+                else
+                    cant = guess;
+            }
+            return deltas.ElementAt(cant).Key - 1;
+        }
+        private bool CanDo(IEnumerable<long> sub, int bricks, int ladders)
+        {
+            if (sub.Count() <= ladders)
+                return true;
+            var sum = sub.OrderByDescending(h => h).Skip(ladders).Sum();
+            return bricks >= sum;
+        }
+        public int FurthestBuildingBrute(int[] heights, int bricks, int ladders)
         {
             var deltas = new List<KeyValuePair<int, int>>();
             for (int i = 0; i < heights.Length; i++)
@@ -90,37 +125,31 @@ namespace leetcode
                 deltas.Add(new KeyValuePair<int, int>(i, heights[i] - heights[i - 1]));
             }
             var dict = new SortedDictionary<int, int>();
-            var cutoff = 0;
             var sum = 0L;
             var jumps = 0;
-            var aSizes = new int[deltas.Count()];
-            //var lSizes = new List<int>();
-            int iSize = 0;
-            int iCutoff = 0;
             foreach (var kvp in deltas)
             {
                 if (ladders > 0)
                 {
                     if (++jumps <= ladders)
                     {
-                        aSizes[iSize++] = kvp.Value;
-                        //lSizes.Add(kvp.Value);
-                        if (kvp.Value < cutoff)
-                        {
-                            cutoff = kvp.Value;
-                            iCutoff = iSize - 1;
-                        }
+                        if (!dict.ContainsKey(kvp.Value))
+                            dict.Add(kvp.Value, 0);
+                        dict[kvp.Value]++;
                         continue;
                     } 
-                    else if (kvp.Value > cutoff)
+                    else if (kvp.Value > dict.First().Key)
                     {
-                        sum += aSizes[iCutoff];
-                        aSizes[iCutoff] = kvp.Value;
-                        //lSizes.Add(kvp.Value);
-                        //lSizes.Remove(cutoff);
-                        //cutoff = lSizes.Min();
-                        cutoff = aSizes.Take(iSize).Min();
-                        iCutoff = Array.IndexOf(aSizes, cutoff);
+                        var smallest = dict.First();
+                        sum += smallest.Key;
+                        if (smallest.Value == 1)
+                            dict.Remove(smallest.Key);
+                        else
+                            dict[smallest.Key]--;
+
+                        if (!dict.ContainsKey(kvp.Value))
+                            dict.Add(kvp.Value, 0);
+                        dict[kvp.Value]++;
                     }
                     else
                         sum += kvp.Value;
@@ -151,19 +180,6 @@ namespace leetcode
             }
             sub.Add(kvp);
         }
-        private bool CanDo(IEnumerable<KeyValuePair<int, long>> sub, int bricks, int ladders)
-        {
-            if (sub.Count() <= ladders)
-                return true;
-            var sum = sub.Skip(ladders).Sum(v => v.Value);
-            /*var sum = 0L;
-            for (int i = ladders; i < sub.Count(); i++)
-            {
-                sum += sub[i].Value;
-                if (sum > bricks)
-                    return false;
-            }*/
-            return bricks >= sum;
-        }
+
     }
 }
