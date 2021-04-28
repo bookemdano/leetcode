@@ -1,7 +1,49 @@
 fn main() {
     // atoi_tests
-    icecream();
+    //icecream();
+    power_of_3();
+    println!("All tests completed successfully");
 }
+fn power_of_3(){
+    assert_eq!(true, is_power_of_three(9));
+    assert_eq!(true, is_power_of_three(243));
+    assert_eq!(true, is_power_of_three(27));
+    assert_eq!(true, is_power_of_three(3));
+    assert_eq!(true, is_power_of_three(1));
+    
+    assert_eq!(false, is_power_of_three(8));
+    assert_eq!(false, is_power_of_three(177148));
+    assert_eq!(false, is_power_of_three(1594322));
+    assert_eq!(false, is_power_of_three(45));
+    assert_eq!(false, is_power_of_three(0));
+    assert_eq!(false, is_power_of_three(-27));
+}
+pub fn is_power_of_three(n: i32) -> bool {
+    if n <= 0 {
+        return false;
+    }
+    let mut min = 0;
+    let mut max = 19;
+    let base: i32 = 3;
+    loop {
+
+        let guess = ((max - min) / 2) + min;
+        let val = base.pow(guess);
+        if val == n {
+            break true;
+        }
+
+        if val > n {
+            max = guess - 1;
+        } else if val < n {
+            min = guess + 1;
+        }
+        if max < min {
+            break false;
+        }
+    }
+}
+
 fn icecream()
 {
     assert_eq!(4, max_ice_cream(vec!(1,3,2,4,1), 7));
