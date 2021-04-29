@@ -143,7 +143,7 @@ namespace leetcode
 
         public static string NextBlock(string str, ref int start, char cStart, char cEnd)
         {
-            if (str[start] != cStart)
+            if (start >= str.Length || str[start] != cStart)
                 return null;
             int depth = 0;
             for (int i = start; i < str.Length; i++)

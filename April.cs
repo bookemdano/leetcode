@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
@@ -9,6 +10,76 @@ namespace leetcode
     public class April
     {
         static public void Test()
+        {
+            TestPaths();
+        }
+        static void TestPaths()
+        {
+            var c = new April();
+            Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0]]")));
+            Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1]]")));
+            Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1,0]]")));
+            Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[0,1]]")));
+            Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0,1],[0,0]]")));
+            Dessert.AssertSame(2, c.UniquePathsWithObstacles(ParseGrid("[[0,0,0],[0,1,0],[0,0,0]]")));
+            Dessert.AssertSame(13594824, c.UniquePathsWithObstacles(ParseGrid(File.ReadAllText("assets//input20210428.txt"))));
+        }
+        public int UniquePathsWithObstacles(int[][] obstacleGrid)
+        {
+            return Path(new Tuple<int, int>(0, 0), obstacleGrid);
+        }
+        int Path(Tuple<int, int> square, int[][] obstacleGrid)
+        {
+            if (obstacleGrid[square.Item1][square.Item2] == 1)
+                return 0;
+            if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid[0].Length - 1)
+                return 1;
+            var rv = 0;
+            while (true)
+            {
+                var n = Neighbors(square, obstacleGrid);
+                if (n.Count() == 0)
+                    return rv;
+                else
+                {
+                    if (n.Count() == 2)
+                        rv += Path(n[1], obstacleGrid);
+                    square = n[0];
+                    if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid[square.Item1].Length - 1)
+                        return rv + 1;
+                }
+
+            }
+        }
+        List<Tuple<int, int>> Neighbors(Tuple<int, int> square, int[][] obstacleGrid)
+        {
+            var x = square.Item1;
+            var y = square.Item2;
+            var rv = new List<Tuple<int, int>>();
+            if (x < obstacleGrid.Length - 1 && obstacleGrid[x + 1][y] == 0)
+                rv.Add(new Tuple<int, int>(x + 1, y));
+            if (y < obstacleGrid[x].Length - 1 && obstacleGrid[x][y + 1] == 0)
+                rv.Add(new Tuple<int, int>(x, y + 1));
+
+            return rv;
+        }
+
+        static int[][] ParseGrid(string str)
+        {
+            var rv = new List<int[]>();
+            var i = 0;
+            str = str.Substring(1, str.Length - 2);
+            var nextblock = StringUtils.NextBlock(str, ref i, '[', ']');
+            while (nextblock != null)
+            {
+                rv.Add(nextblock.Split(',').Select(s => int.Parse(s)).ToArray());
+                i++;
+                nextblock = StringUtils.NextBlock(str, ref i, '[', ']');
+            }
+            return rv.ToArray();
+        }
+
+        static void TestPowerOfThree()
         {
             var c = new April();
             Dessert.IsTrue(!c.IsPowerOfThree(177148));
@@ -25,8 +96,6 @@ namespace leetcode
             Dessert.IsTrue(!c.IsPowerOfThree(-9));
             Dessert.IsTrue(!c.IsPowerOfThree(-27));
             Dessert.IsTrue(!c.IsPowerOfThree(-45));
-
-            //c.TestBuilding();
         }
         // passed
         public bool IsPowerOfThreeWithLog(int n)
