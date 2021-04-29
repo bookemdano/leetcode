@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -16,60 +17,57 @@ namespace leetcode
         static void TestPaths()
         {
             var c = new April();
+            int[][] array;
+            Stopwatch sw;
+
+            array = ParseGrid(File.ReadAllText("assets//input20210428a.txt"));
+            sw = Stopwatch.StartNew();
+            Dessert.AssertSame(13594824, c.UniquePathsWithObstacles(array), sw.Elapsed.ToString());
+
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[0,1]]")));
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0]]")));
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1]]")));
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1,0]]")));
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0,1],[0,0]]")));
             Dessert.AssertSame(2, c.UniquePathsWithObstacles(ParseGrid("[[0,0,0],[0,1,0],[0,0,0]]")));
-            Dessert.AssertSame(13594824, c.UniquePathsWithObstacles(ParseGrid(File.ReadAllText("assets//input20210428.txt"))));
+
+        
+            array = ParseGrid(File.ReadAllText("assets//input20210428b.txt"));
+            sw = Stopwatch.StartNew();
+            Dessert.AssertSame(1, c.UniquePathsWithObstacles(array), sw.Elapsed.ToString());
+
         }
         public int UniquePathsWithObstacles(int[][] obstacleGrid)
         {
-            var grid = new int[obstacleGrid.Length, obstacleGrid[0].Length];
-            for (int i = 0; i < obstacleGrid.Length; i++)
-            {
-                for (int j = 0; j < obstacleGrid[i].Length; j++)
-                    grid[i, j] = obstacleGrid[i][j];
-            }
-            return Path(new Tuple<int, int>(0, 0), grid);
+            return Path(0, 0, obstacleGrid);
         }
-        int Path(Tuple<int, int> square, int[,] obstacleGrid)
+
+        int Path(int x, int y, int[][] obstacleGrid)
         {
-            if (obstacleGrid[square.Item1, square.Item2] == 1)
+            if (obstacleGrid[x][y] == 1)
                 return 0;
-            if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid.GetLength(1) - 1)
-                return 1;
+            var maxX = obstacleGrid.Length;
+            var maxY = obstacleGrid[0].Length;
             var rv = 0;
+            var pathLen = 0;
             while (true)
             {
-                var n = Neighbors(square, obstacleGrid);
-                if (n.Count() == 0)
+                pathLen++;
+                if (x == maxX - 1 && y == maxY - 1)
+                    return rv + 1;
+                var r = (x < maxX - 1 && obstacleGrid[x + 1][y] == 0);
+                var d = (y < maxY - 1 && obstacleGrid[x][y + 1] == 0);
+                if (!r && !d)
                     return rv;
-                else
-                {
-                    if (n.Count() == 2)
-                        rv += Path(n[1], obstacleGrid);
-                    square = n[0];
-                    if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid.GetLength(1) - 1)
-                        return rv + 1;
-                }
-
+                if (r && d)
+                    rv += Path(x, y + 1, obstacleGrid);
+                if (r)
+                    x++;
+                else if (d)
+                    y++;
             }
         }
-        List<Tuple<int, int>> Neighbors(Tuple<int, int> square, int[,] obstacleGrid)
-        {
-            var x = square.Item1;
-            var y = square.Item2;
-            var rv = new List<Tuple<int, int>>();
-            if (x <= obstacleGrid.Length - 1 && obstacleGrid[x + 1, y] == 0)
-                rv.Add(new Tuple<int, int>(x + 1, y));
-            if (y <= obstacleGrid.GetLength(1) - 1 && obstacleGrid[x, y + 1] == 0)
-                rv.Add(new Tuple<int, int>(x, y + 1));
-
-            return rv;
-        }
-
+     
         static int[][] ParseGrid(string str)
         {
             var rv = new List<int[]>();

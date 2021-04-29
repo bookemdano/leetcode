@@ -9,6 +9,7 @@
     <None Remove="assets\input20210426b.txt" />
     <None Remove="assets\input20210428.txt" />
     <None Remove="input20210426a.txt" />
+    <None Remove="assets\input20210428 %28copy%29.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\input20210426b.txt">
@@ -17,7 +18,10 @@
     <Content Include="assets\input20210426a.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\input20210428.txt">
+    <Content Include="assets\input20210428a.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\input20210428b.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
