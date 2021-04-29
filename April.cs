@@ -16,23 +16,29 @@ namespace leetcode
         static void TestPaths()
         {
             var c = new April();
+            Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[0,1]]")));
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0]]")));
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1]]")));
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1,0]]")));
-            Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[0,1]]")));
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0,1],[0,0]]")));
             Dessert.AssertSame(2, c.UniquePathsWithObstacles(ParseGrid("[[0,0,0],[0,1,0],[0,0,0]]")));
             Dessert.AssertSame(13594824, c.UniquePathsWithObstacles(ParseGrid(File.ReadAllText("assets//input20210428.txt"))));
         }
         public int UniquePathsWithObstacles(int[][] obstacleGrid)
         {
-            return Path(new Tuple<int, int>(0, 0), obstacleGrid);
+            var grid = new int[obstacleGrid.Length, obstacleGrid[0].Length];
+            for (int i = 0; i < obstacleGrid.Length; i++)
+            {
+                for (int j = 0; j < obstacleGrid[i].Length; j++)
+                    grid[i, j] = obstacleGrid[i][j];
+            }
+            return Path(new Tuple<int, int>(0, 0), grid);
         }
-        int Path(Tuple<int, int> square, int[][] obstacleGrid)
+        int Path(Tuple<int, int> square, int[,] obstacleGrid)
         {
-            if (obstacleGrid[square.Item1][square.Item2] == 1)
+            if (obstacleGrid[square.Item1, square.Item2] == 1)
                 return 0;
-            if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid[0].Length - 1)
+            if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid.GetLength(1) - 1)
                 return 1;
             var rv = 0;
             while (true)
@@ -45,20 +51,20 @@ namespace leetcode
                     if (n.Count() == 2)
                         rv += Path(n[1], obstacleGrid);
                     square = n[0];
-                    if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid[square.Item1].Length - 1)
+                    if (square.Item1 == obstacleGrid.Length - 1 && square.Item2 == obstacleGrid.GetLength(1) - 1)
                         return rv + 1;
                 }
 
             }
         }
-        List<Tuple<int, int>> Neighbors(Tuple<int, int> square, int[][] obstacleGrid)
+        List<Tuple<int, int>> Neighbors(Tuple<int, int> square, int[,] obstacleGrid)
         {
             var x = square.Item1;
             var y = square.Item2;
             var rv = new List<Tuple<int, int>>();
-            if (x < obstacleGrid.Length - 1 && obstacleGrid[x + 1][y] == 0)
+            if (x <= obstacleGrid.Length - 1 && obstacleGrid[x + 1, y] == 0)
                 rv.Add(new Tuple<int, int>(x + 1, y));
-            if (y < obstacleGrid[x].Length - 1 && obstacleGrid[x][y + 1] == 0)
+            if (y <= obstacleGrid.GetLength(1) - 1 && obstacleGrid[x, y + 1] == 0)
                 rv.Add(new Tuple<int, int>(x, y + 1));
 
             return rv;
