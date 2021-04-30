@@ -20,6 +20,26 @@ namespace leetcode
                 Error($"is_true {str} '{b}'");
             return b;
         }
+
+        internal static bool AssertSame(int[] lh, int[] rh)
+        {
+            if (lh.Length != rh.Length)
+            {
+                Error("length diff");
+                return false;
+            }
+            for (int i = 0; i < lh.Length; i++)
+            {
+                if (lh[i] != rh[i])
+                {
+                    Error("array diff " + i);
+                    return false;
+                }
+            }
+            Pass("array diff");
+            return true;
+        }
+
         static void Error(string str)
         {
             Console.WriteLine($"{DateTime.Now} ***FAILED*** {str}");

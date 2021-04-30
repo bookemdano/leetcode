@@ -12,7 +12,47 @@ namespace leetcode
     {
         static public void Test()
         {
-            TestPaths();
+            TestSearch();
+        }
+        static void TestSearch()
+        {
+            var c = new April();
+            Dessert.AssertSame(new int[] { 3, 4 }, c.SearchRange(new int[] { 5, 7, 7, 8, 8, 10 }, 8));
+            Dessert.AssertSame(new int[] { -1, -1 }, c.SearchRange(new int[] { 5, 7, 7, 8, 8, 10 }, 6));
+            Dessert.AssertSame(new int[] { 0, 3 }, c.SearchRange(new int[] { 7, 7, 7, 7 }, 7));
+            Dessert.AssertSame(new int[] { -1, -1 }, c.SearchRange(new int[] { 7, 7, 7, 7 }, 8));
+            Dessert.AssertSame(new int[] { -1, -1 }, c.SearchRange(new int[0], 0));
+            Dessert.AssertSame(new int[] { 0, 0 }, c.SearchRange(new int[] { 5 }, 5));
+            Dessert.AssertSame(new int[] { 2, 2 }, c.SearchRange(new int[] { 2, 3, 5 }, 5));
+            Dessert.AssertSame(new int[] { 0, 0 }, c.SearchRange(new int[] { 2, 3, 5 }, 2));
+            Dessert.AssertSame(new int[] { 1, 1 }, c.SearchRange(new int[] { 2, 3, 5 }, 3));
+        }
+        public int[] SearchRange(int[] nums, int target)
+        {
+            var min = 0;
+            var max = nums.Length - 1;
+            if (max < 0 || target < nums[0] || target > nums[max])
+                return new int[] { -1, -1 };
+            while (max >= min)
+            {
+                var guess = min + (max - min) / 2;
+                if (nums[guess] < target)
+                    min = guess + 1;
+                else if (nums[guess] > target)
+                    max = guess - 1;
+                else
+                {
+                    var rv = new int[] { guess - 1, guess + 1 };
+                    while (rv[0] >= 0 && nums[rv[0]] == target)
+                        rv[0]--;
+                    rv[0]++;
+                    while (rv[1] < nums.Length && nums[rv[1]] == target)
+                        rv[1]++;
+                    rv[1]--;
+                    return rv;
+                }
+            }
+            return new int[] { -1, -1 };
         }
         static void TestPaths()
         {
