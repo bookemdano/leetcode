@@ -1,9 +1,81 @@
 fn main() {
     // atoi_tests
     //icecream();
-    power_of_3();
+    //power_of_3();
+    unique_paths();
     println!("All tests completed successfully");
 }
+fn unique_paths()
+{
+    assert_eq!(1, unique_paths_with_obstacles(parse_grid("[0,1],[0,0]")));
+    assert_eq!(2, unique_paths_with_obstacles(parse_grid("[0,0,0],[0,1,0],[0,0,0]")));
+    assert_eq!(1, unique_paths_with_obstacles(parse_grid("[0]")));
+    assert_eq!(0, unique_paths_with_obstacles(parse_grid("[1]")));
+    assert_eq!(0, unique_paths_with_obstacles(parse_grid("[1,0]")));
+    assert_eq!(11, unique_paths_with_obstacles(parse_grid("[0,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0],[0,0,0,0,0]")));
+    
+    assert_eq!(
+        13594824, 
+        unique_paths_with_obstacles(
+            parse_grid("[0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,0],[1,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,1],[0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],[0,0,0,0,0,1,0,0,0,0,1,1,0,1,0,0,0,0],[1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0],[0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,1,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0],[0,1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0],[0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1],[0,1,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1],[1,0,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1,0],[0,0,0,1,0,0,0,0,1,1,1,0,0,1,0,1,1,0],[0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0],[0,0,0,0,0,0,1,0,1,0,0,1,0,1,1,1,0,0],[0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1],[0,1,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],[1,0,0,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0],[0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,0],[1,0,1,0,1,0,0,0,0,0,0,1,1,0,0,0,0,1],[1,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0]")));
+}
+fn parse_grid(s: &str) -> Vec<Vec<i32>>{
+
+    let mut start = 0;
+    let mut vec = Vec::new();
+    for (i, c) in s.chars().enumerate() {
+        if c == '[' {
+            start = i + 1;
+        }
+        else if c == ']' {
+            let sub = &s[start..i];
+            let mut row = Vec::new();
+            for c2 in sub.chars() {
+                if c2 == ',' {
+                    continue;
+                }
+                row.push(c2 as i32 - 48);
+            }
+            vec.push(row);
+        }
+    }
+    return vec;
+}
+
+pub fn unique_paths_with_obstacles(obstacle_grid: Vec<Vec<i32>>) -> i32 {
+    if obstacle_grid[0][0] == 1
+    {
+        return 0;
+    }
+    return path(0, 0, &obstacle_grid);     
+}
+fn path(row: usize, col: usize, obstacle_grid: &Vec<Vec<i32>>) -> i32 {
+    let rows = obstacle_grid.len();
+    let cols = obstacle_grid[0].len();
+    let mut rv = 0;
+    let mut row = row;
+    let mut col = col;
+    loop {
+        if row == rows - 1 && col == cols - 1 {
+            return rv + 1;  // we are at the end!
+        }
+        let down = row < rows - 1 && obstacle_grid[row + 1][col] == 0;
+        let right = col < cols - 1 && obstacle_grid[row][col + 1] == 0;
+        if !right && !down {
+            return rv;
+        }
+        if right && down {
+            rv += path(row, col + 1, &obstacle_grid);    // spawn another path to the right
+        }
+        if down {
+            row = row + 1;  // proceed down
+        }
+        else {  // proceed right
+            col = col + 1;
+        }
+    }
+}
+
 fn power_of_3(){
     assert_eq!(true, is_power_of_three(9));
     assert_eq!(true, is_power_of_three(243));

@@ -19,7 +19,7 @@ namespace leetcode
             var c = new April();
             int[][] array;
             Stopwatch sw;
-
+         
             array = ParseGrid(File.ReadAllText("assets//input20210428a.txt"));
             sw = Stopwatch.StartNew();
             Dessert.AssertSame(13594824, c.UniquePathsWithObstacles(array), sw.Elapsed.ToString());
@@ -30,8 +30,9 @@ namespace leetcode
             Dessert.AssertSame(0, c.UniquePathsWithObstacles(ParseGrid("[[1,0]]")));
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(ParseGrid("[[0,1],[0,0]]")));
             Dessert.AssertSame(2, c.UniquePathsWithObstacles(ParseGrid("[[0,0,0],[0,1,0],[0,0,0]]")));
+            Dessert.AssertSame(11, c.UniquePathsWithObstacles(ParseGrid("[[0,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0],[0,0,0,0,0]]")));
 
-        
+
             array = ParseGrid(File.ReadAllText("assets//input20210428b.txt"));
             sw = Stopwatch.StartNew();
             Dessert.AssertSame(1, c.UniquePathsWithObstacles(array), sw.Elapsed.ToString());
@@ -41,9 +42,12 @@ namespace leetcode
         {
             return Path(0, 0, obstacleGrid);
         }
-
+        List<Tuple<int, int>> _tried = new List<Tuple<int, int>>();
+        static int pathDepth = 0;
         int Path(int x, int y, int[][] obstacleGrid)
         {
+            pathDepth++;
+            _tried.Add(new Tuple<int, int>(x, y));
             if (obstacleGrid[x][y] == 1)
                 return 0;
             var maxX = obstacleGrid.Length;
