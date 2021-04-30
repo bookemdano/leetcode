@@ -38,14 +38,14 @@ namespace leetcode
                 var guess = min + (max - min) / 2;
                 if (nums[guess] < target)
                     min = guess + 1;
-                else if (nums[guess] > target)
+                else if (nums[guess] > target || (guess > 0 && nums[guess - 1] == target))
                     max = guess - 1;
                 else
                 {
-                    var rv = new int[] { guess - 1, guess + 1 };
-                    while (rv[0] >= 0 && nums[rv[0]] == target)
-                        rv[0]--;
-                    rv[0]++;
+                    var rv = new int[] { guess, guess + 1 };
+                    //while (rv[0] >= 0 && nums[rv[0]] == target)
+                    //    rv[0]--;
+                    //rv[0]++;
                     while (rv[1] < nums.Length && nums[rv[1]] == target)
                         rv[1]++;
                     rv[1]--;
