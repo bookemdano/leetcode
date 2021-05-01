@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 namespace leetcode
 {
     static public class Dessert
@@ -21,6 +23,10 @@ namespace leetcode
             return b;
         }
 
+        internal static bool AssertSameUnordered(int[] lh, int[] rh)
+        {
+            return AssertSame(lh.OrderBy(v => v).ToArray(), rh.OrderBy(v => v).ToArray());
+        }
         internal static bool AssertSame(int[] lh, int[] rh)
         {
             if (lh.Length != rh.Length)

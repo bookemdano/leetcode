@@ -12,7 +12,49 @@ namespace leetcode
     {
         static public void Test()
         {
-            TestSearch();
+            TestPower();
+
+        }
+        static void TestPower()
+        {
+            var c = new April();
+
+            // Input: x = 2, y = 3, bound = 10 Output:[2,3,4,5,7,9,10]
+            //Dessert.AssertSameUnordered(new int[] { 2 }, c.PowerfulIntegers(1, 2, 1000000).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 175617, 2, 3137, 3656, 6736, 3601, 116, 57, 3196, 61 }, c.PowerfulIntegers(60, 56, 175617).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 2 }, c.PowerfulIntegers(1, 1, 40000).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 2, 3, 4, 5, 7, 9, 10 }, c.PowerfulIntegers(2, 3, 10).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 2, 4, 6, 8, 10, 14 }, c.PowerfulIntegers(3, 5, 15).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 9, 2, 3, 5 }, c.PowerfulIntegers(2, 1, 10).ToArray());
+            Dessert.AssertSameUnordered(new int[0], c.PowerfulIntegers(2, 3, 0).ToArray());
+            Dessert.AssertSameUnordered(new int[0], c.PowerfulIntegers(2, 3, 1).ToArray());
+            Dessert.AssertSameUnordered(new int[] { 2 }, c.PowerfulIntegers(2, 3, 2).ToArray());
+        }
+        public IList<int> PowerfulIntegers(int x, int y, int bound)
+        {
+            var rv = new List<int>();
+            if (bound <= 1)
+                return rv;
+            if (x == 1 && y == 1)
+                return new int[] { 2 };
+            var maxi = 0;
+            if (x > 1)
+                maxi = (int) (Math.Log(bound - 1, x) + .0001);
+            var maxj = 0;
+            if (y > 1)
+                maxj = (int) (Math.Log(bound - 1, y) + .0001);
+            for (int i = 0; i <= maxi; i++)
+            {
+                for (int j = 0; j <= maxj; j++)
+                {
+                    var val = (int) (Math.Pow(x, i) + Math.Pow(y, j));
+                    if (val > bound)
+                        break;
+                    if (!rv.Contains(val))
+                        rv.Add(val);
+                }
+            }
+            return rv;   
         }
         static void TestSearch()
         {
