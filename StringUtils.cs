@@ -164,5 +164,14 @@ namespace leetcode
             }
             return null;
         }
+        static public int[] ParseArray(string str)
+        {
+            var rv = new List<int>();
+            str = str.Trim("[]".ToCharArray());
+            var parts = str.Split(",");
+            foreach (var part in parts)
+                rv.Add(int.Parse(part));
+            return rv.ToArray();
+        }
     }
 }
