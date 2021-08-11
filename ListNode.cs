@@ -119,14 +119,41 @@ namespace leetcode
         {
             get
             {
-                return 1 + next.Length;
+                if (_stackLimit == 20)
+                    return int.MaxValue;
+                _stackLimit++;
+
+                var rv = 1 + next.Length;
+                _stackLimit--;
+                return rv;
             }
+        }
+        public static ListNode Parse(string str, int pos)
+        {
+            var rv = Parse(str);
+            if (pos == -1)
+                return rv;
+            var cur = rv;
+            int i = 0;
+            ListNode target = null;
+            while(true)
+            {
+                if (i++ == pos)
+                    target = cur;
+                if (cur.next == null)
+                {
+                    cur.next = target;
+                    break;
+                }
+                cur = cur.next;
+            }
+            return rv;
         }
         public static ListNode Parse(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
                 return null;
-            var parts = str.Split(",");
+            var parts = str.Replace("[", "").Replace("]", "").Split(",");
             ListNode rv = null;
             ListNode lastNode = null;
             foreach (var part in parts)
@@ -142,13 +169,17 @@ namespace leetcode
             return rv;
         }
 
+        static int _stackLimit = 0;
         public override string ToString()
         {
+            if (_stackLimit == 20)
+                return "...";
+            _stackLimit++;
             var rv = $"{val}";
             if (next != null)
                 rv += $", n{next.ToString()}";
+            _stackLimit--;
             return rv;
-
         }
     }
 }

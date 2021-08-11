@@ -23,6 +23,15 @@ namespace leetcode
             return b;
         }
 
+        static public bool IsFalse(bool b, string str = null)
+        {
+            if (!b)
+                Pass($"is_false {str} '{b}'");
+            else
+                Error($"is_false {str} '{b}'");
+            return b;
+        }
+
         internal static bool AssertSameUnordered(int[] lh, int[] rh)
         {
             return AssertSame(lh.OrderBy(v => v).ToArray(), rh.OrderBy(v => v).ToArray());

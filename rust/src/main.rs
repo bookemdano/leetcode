@@ -47,9 +47,9 @@ pub fn unique_paths_with_obstacles(obstacle_grid: Vec<Vec<i32>>) -> i32 {
     {
         return 0;
     }
-    return path(0, 0, &obstacle_grid);     
+    return unique_path(0, 0, &obstacle_grid);     
 }
-fn path(row: usize, col: usize, obstacle_grid: &Vec<Vec<i32>>) -> i32 {
+pub fn unique_path(row: usize, col: usize, obstacle_grid: &Vec<Vec<i32>>) -> i32 {
     let rows = obstacle_grid.len();
     let cols = obstacle_grid[0].len();
     let mut rv = 0;
@@ -65,7 +65,7 @@ fn path(row: usize, col: usize, obstacle_grid: &Vec<Vec<i32>>) -> i32 {
             return rv;
         }
         if right && down {
-            rv += path(row, col + 1, &obstacle_grid);    // spawn another path to the right
+            rv += unique_path(row, col + 1, &obstacle_grid);    // spawn another path to the right
         }
         if down {
             row = row + 1;  // proceed down

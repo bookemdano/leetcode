@@ -15,8 +15,8 @@ namespace leetcode
         {
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
-
-            May2021.Test();
+            LinkedListCycle.Test();
+            //May2021.Test();
             /*
             AssertSame(Fib(0), 0);
             AssertSame(Fib(1), 1);
