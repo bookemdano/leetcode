@@ -122,8 +122,9 @@ namespace leetcode
                 if (_stackLimit == 20)
                     return int.MaxValue;
                 _stackLimit++;
-
-                var rv = 1 + next.Length;
+                var rv = 1;
+                if (next != null)
+                    rv += next.Length;
                 _stackLimit--;
                 return rv;
             }

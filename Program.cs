@@ -15,7 +15,7 @@ namespace leetcode
         {
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
-            LinkedListCycle.Test();
+            NonRepeatingSubstring.Test();
             //May2021.Test();
             /*
             AssertSame(Fib(0), 0);
