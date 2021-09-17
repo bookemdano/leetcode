@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace leetcode
 {
@@ -12,8 +14,11 @@ namespace leetcode
         internal static void Test()
         {
             var c = new NonRepeatingSubstring();
-            Dessert.AssertSame(2, c.LengthOfLongestSubstring("abba"));
+            var sw = Stopwatch.StartNew();
+            Dessert.AssertSame(0, c.LengthOfLongestSubstring(""));
             Dessert.AssertSame(3, c.LengthOfLongestSubstring("abcabcbb"));
+            Dessert.AssertSame(17, c.LengthOfLongestSubstring("yzcrkylidvgqxebwmubplzxihjlvataasdsfdfngavyyabuowyfhzcpglcdoxeoqjivmnkuofsohti"), $"{sw.Elapsed}");
+            
             Dessert.AssertSame(3, c.LengthOfLongestSubstring("abcb"));
             Dessert.AssertSame(9, c.LengthOfLongestSubstring("danielefrancis"));
             Dessert.AssertSame(1, c.LengthOfLongestSubstring("bbbbb"));
@@ -21,10 +26,59 @@ namespace leetcode
             Dessert.AssertSame(2, c.LengthOfLongestSubstring("au"));
             Dessert.AssertSame(3, c.LengthOfLongestSubstring("pwwkew"));
             Dessert.AssertSame(3, c.LengthOfLongestSubstring("dvdf"));
+            Dessert.AssertSame(2, c.LengthOfLongestSubstring("abba"));
             var txt = File.ReadAllText("assets//input20210815.txt");
             Dessert.AssertSame(86, c.LengthOfLongestSubstring(txt.Substring(0, 1000)));
         }
         public int LengthOfLongestSubstring(string s)
+        {
+            if (s == "")
+                return 0;
+            var chars = new Dictionary<char, List<int>>();
+            var length = s.Length;
+            for (int i = 0; i < length; i++)
+            {
+                var c = s[i];
+                if (!chars.ContainsKey(c))
+                    chars.Add(c, new List<int>());
+                chars[c].Add(i);
+            }
+
+
+            var start = 0;
+            var end = 1;
+            var max = 1;
+            while(end < length)
+            {
+                var sub = s.Substring(start, end - start + 1);
+                bool b = IsUnique(s, start, end, chars);
+                if (b)
+                {
+                    var len = end - start + 1;
+                    if (len > max)
+                        max = len;
+                    end++;
+                }
+                else
+                    start++;
+            }
+            return max;
+        }
+
+        private bool IsUnique(string s, int start, int end, Dictionary<char, List<int>> chars)
+        {
+            for (int i = start; i <= end; i++)
+            {
+                var c = s[i];
+                var subInts = chars[c].Where(i => i >= start && i <= end).ToArray();
+                if (subInts.Length > 1)
+                    return false;
+            }
+            return true;
+
+        }
+
+        public int LengthOfLongestSubstring2(string s)
         {
             var chars = new Dictionary<char, List<int>>();
             var length = s.Length;
@@ -35,58 +89,101 @@ namespace leetcode
                     chars.Add(c, new List<int>());
                 chars[c].Add(i);
             }
-            return RLOLS(chars, s, 0);
-            /*
-            var minGap = length;
-            foreach (var kvp in chars)
+            var looper = new Dictionary<string, int>();
+            return RLOLS(chars, Sub.Create(0, length - 1, s), 1, looper);
+        }
+        int RLOLS(Dictionary<char, List<int>> chars, Sub sub, int max, Dictionary<string, int> looper)
+        {
+            if (looper.ContainsKey(sub.Sz))
+                return looper[sub.Sz];
+            var length = sub.Length;
+            var allSplits = new List<Sub>();
+            foreach(var kvp in chars)
             {
                 var c = kvp.Key;
-                int maxGap = 0;
-                if (kvp.Value.Count() == 1)
-                    maxGap = length;
-                else
-                {
-                    maxGap = chars[c][1];
-                    var last = chars[c][chars[c].Count() - 2];
-                    var gap = length - (last + 1);
-                    if (gap > maxGap)
-                        maxGap = gap;
-
-                }
-                if (maxGap < minGap)
-                    minGap = maxGap;
+                var ints = kvp.Value;
+                var splits = GetSplits(ints, sub, max);
+                if (splits == null)
+                    continue;
+                allSplits.AddRange(splits);
             }
-            return minGap;
-            */
-        }
-        int RLOLS(Dictionary<char, List<int>> chars, string s, int gCur)
-        {
-            var length = s.Length;
-            for (int iCur = 0; iCur < length; iCur++)
+            if (!allSplits.Any())
             {
-                var c = s[iCur];
-                var ints = chars[c];
-                var gNextDup = ints.FirstOrDefault(i => i > gCur + iCur && i < gCur + length);
-                if (gNextDup != 0)
-                {
-                    var iNextDup = gNextDup - gCur;
-                    //var left = iNextDup;
-                    var left = RLOLS(chars, s.Substring(0, iNextDup), gCur);
-
-                    //var gNextDupEnd = ints.FirstOrDefault(i => i > gNextDup);
-                    //if (gNextDupEnd == 0)
-                    //    gNextDupEnd = length;
-                    var maxRight = length - (iCur + 1);
-                    if (left >= maxRight)
-                        return left;
-                    var right = RLOLS(chars, s.Substring(iCur + 1, maxRight), gCur + iCur + 1);
-                    if (right > left)
-                        return right;
-                    else
-                        return left;
-                }
+                looper[sub.Sz] = length;
+                return looper[sub.Sz];
             }
-            return length;       
+            foreach (var split in allSplits)
+            {
+                if (split.Length <= max)
+                    continue;
+                var val = RLOLS(chars, split, max, looper);
+                if (val > max)
+                    max = val;
+            }
+            looper[sub.Sz] = max;
+            return looper[sub.Sz];
+        }
+
+        private List<Sub> GetSplits(List<int> ints, Sub sub, int max)
+        {
+            var rv = new List<Sub>();
+            var subInts = ints.Where(i => i >= sub.Start && i <= sub.End).ToArray();
+            var len = subInts.Count();
+            var last = sub.End;
+            if (len == 1)
+            {
+                return null;
+                //rv.Add(Sub.Create(0, last, s));
+            }
+
+            for (int i = 0; i < len; i++)
+            {
+                int prev = 0;
+                if (i >= 1)
+                    prev = subInts[i - 1] + 1;
+                int next = last;
+                if (i + 1 < len)
+                    next = subInts[i + 1] - 1;
+                //if (next - prev + 1 <= max)
+                //    continue;
+                rv.Add(Sub.Create(prev, next, sub.Original));
+            }
+            //if (prev < s.Length - 1)
+            //    rv.Add(Sub.Create(prev, s.Length - 1, s));
+
+            return rv;
+        }
+    }
+    public class Sub
+    {
+        static public Sub Create(int start, int end, string original)
+        {
+            var rv = new Sub();
+            rv.Start = start;
+            rv.End = end;
+            rv.Original = original;
+            return rv;
+        }
+        public override string ToString()
+        {
+            return $"{Sz} {Start},{End}";
+        }
+        public int Start { get; set; }
+        public int End { get; set; }
+        public string Original { get; set; }
+        public string Sz
+        {
+            get
+            {
+                return Original.Substring(Start, Length);
+            }
+        }
+        public int Length
+        {
+            get
+            {
+                return End - Start + 1;
+            }
         }
     }
     public class Edge

@@ -97,5 +97,25 @@ namespace leetcode
             }
             return true;
         }
+        internal static bool AssertSame(TreeNode treeNode1, TreeNode treeNode2, string str = "")
+        {
+            var i1 = treeNode1;
+            var i2 = treeNode2;
+            if (i1 == null && i2 == null)
+                return true;
+            if (string.IsNullOrWhiteSpace(str))
+                str = $"{treeNode1} vs {treeNode2}";
+
+            if (!NotNull(i1, "li1") || !NotNull(i2, "li2"))
+                return false;
+            if (!AssertSame(i1.val, i2.val, str))
+                return false;
+            if (!AssertSame(i1.left, i2.left, str))
+                return false;
+            if (!AssertSame(i1.right, i2.right, str))
+                return false;
+
+            return true;
+        }
     }
 }
