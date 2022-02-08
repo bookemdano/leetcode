@@ -12,7 +12,7 @@ namespace leetcode
         {
             Console.WriteLine("Hello World!");
             var sw = Stopwatch.StartNew();
-            WordDictionaryTest.Test();
+            WordSearch.Test();
             Console.WriteLine($"{sw.Elapsed}");
         }
     }
